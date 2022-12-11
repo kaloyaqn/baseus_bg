@@ -1,0 +1,132 @@
+{{ header }}
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/bg_BG/sdk.js#xfbml=1&version=v15.0&appId=1887157124806379&autoLogAppEvents=1" nonce="mtk6zAg4"></script>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '1887157124806379',
+            cookie     : true,
+            xfbml      : true,
+            version: 'v15.0'
+          });
+            
+          FB.AppEvents.logPageView();   
+            
+        };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+
+
+
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+            console.log(response);
+            });
+            
+            FB.api('/me?fields=email,name', function(response) {
+            	console.log(response.name, response.email);
+                  var name = $("#username").val();
+                  $.ajax({
+                    type: "GET",
+                    url: "/index.php?route=account/register",
+                    data: {name: response.name, email: email: response.email, id: response.id},
+                    cache: false,
+                    success: function(data){
+                      $("#input-firstname").text(data.name);
+                      $("#input-email").text(data.email);
+                      $("#input-password").text("test");
+                      $("#input-confirm").text("test");
+                    }
+                  }) 
+            });
+        }
+
+    //ajax fb danni start
+
+
+    //ajax fb danni end
+
+</script>
+<ul class="breadcrumb">
+  {% for breadcrumb in breadcrumbs %}
+  <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+  {% endfor %}
+</ul>
+{% if journal3.get('pageTitlePosition') == 'top' %}
+<h1 class="title page-title"><span class="page-title-text">{{ heading_title }}</span></h1>
+{% endif %}
+{{ journal3_top }}
+<div id="account-login" class="container">
+  {% if success %}
+  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
+  {% endif %}
+  {% if error_warning %}
+  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">
+      {% if journal3.get('pageTitlePosition') == 'default' %}
+      <h1 class="title page-title">{{ heading_title }}</h1>
+      {% endif %}
+      {{ content_top }}
+      <div class="row login-box">
+        {% if not journal3.is_popup %}
+        <div class="col-sm-6">
+          <div class="well">
+            <h2 class="title">{{ text_new_customer }}</h2>
+            <p><strong>{{ text_register }}</strong></p>
+            <p>{{ text_register_account }}</p>
+            <div class="buttons">
+            
+              <div class="fb-login-button" data-width="100%" data-size="large" data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="true" data-use-continue-as="true" onlogin="checkLoginState();"></div>              
+              <div class="pull-right">
+                <a href="{{ register }}" class="btn btn-primary">{{ button_continue }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="col-sm-6">
+          <div class="well">
+            <h2 class="title">{{ text_returning_customer }}</h2>
+            <p><strong>{{ text_i_am_returning_customer }}</strong></p>
+            <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal login-form">
+              <div class="form-group">
+                <label class="control-label" for="input-email">{{ entry_email }}</label>
+                <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label class="control-label" for="input-password">{{ entry_password }}</label>
+                <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" class="form-control" />
+                </div><a class="forgot-password" href="{{ forgotten }}" target="_top">{{ text_forgotten }}</a>
+              <div class="buttons">
+                <div class="pull-right">
+                  <button type="submit" class="btn btn-primary" data-loading-text="<span>{{ button_login }}</span>"><span>{{ button_login }}</span></button>
+                </div>
+              </div>
+              {% if redirect %}
+              <input type="hidden" name="redirect" value="{{ redirect }}" />
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}
+
+ 
