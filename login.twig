@@ -2,7 +2,7 @@
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/bg_BG/sdk.js#xfbml=1&version=v15.0&appId=1887157124806379&autoLogAppEvents=1" nonce="mtk6zAg4"></script>
     <script>
-        window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
           FB.init({
             appId      : '1887157124806379',
             cookie     : true,
@@ -23,35 +23,42 @@
          }(document, 'script', 'facebook-jssdk'));
 
 
+        function makepass(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
 
+        let pass = makepass(10);
         function checkLoginState() {
             FB.getLoginStatus(function(response) {
             console.log(response);
             });
             
-            FB.api('/me?fields=email,name', function(response) {
+            FB.api('/me', {fields: 'name, email'}, function(response) {
+              console.log(response);
             	console.log(response.name, response.email);
                   var name = $("#username").val();
                   $.ajax({
-                    type: "GET",
-                    url: "/index.php?route=account/register",
-                    data: {name: response.name, email: email: response.email, id: response.id},
+                    type: "POST",
+                    url: "https://baseus.bg/baseus2/index.php?route=account/register",
+                    data: {lastname: response.name,firstname: response.name, email: 'fsajfkav1111222kl@abv.bg', password: '59!24Aa@@112', confirm: '59!24Aa@@112', agree:1},
                     cache: false,
                     success: function(data){
-                      $("#input-firstname").text(data.name);
-                      $("#input-email").text(data.email);
-                      $("#input-password").text("test");
-                      $("#input-confirm").text("test");
+                      console.log(data);
+                      window.location.href = window.location.href;
+                      //$("#input-firstname").text(data.name);
+                      //$("#input-email").text(data.email);
+                      //$("#input-password").text("test");
+                      //$("#input-confirm").text("test");
                     }
                   }) 
             });
         }
-
-    //ajax fb danni start
-
-
-    //ajax fb danni end
-
 </script>
 <ul class="breadcrumb">
   {% for breadcrumb in breadcrumbs %}
