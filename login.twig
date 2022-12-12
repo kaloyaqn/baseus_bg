@@ -2,6 +2,8 @@
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/bg_BG/sdk.js#xfbml=1&version=v15.0&appId=1887157124806379&autoLogAppEvents=1" nonce="mtk6zAg4"></script>
     <script>
+    let parola = "";
+
 window.fbAsyncInit = function() {
           FB.init({
             appId      : '1887157124806379',
@@ -23,34 +25,49 @@ window.fbAsyncInit = function() {
          }(document, 'script', 'facebook-jssdk'));
 
 
-        function makepass(length) {
-            var result           = '';
-            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var charactersLength = characters.length;
-            for ( var i = 0; i < length; i++ ) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
+        function generatePassword() {
+          // Създайте масив от символи, които да се използват за паролата
+          const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+          // Задайте дължината на паролата
+          const passwordLength = 16;
+
+          // Инициализирайте паролата като празен низ
+          let password = "";
+
+          // Циклийте през дължината на паролата и генерирайте случаен символ за всеки позиция
+          for (let i = 0; i < passwordLength; i++) {
+            // Използвайте метода random() за да генерирате случайно число между 0 и 1
+            const random = Math.random();
+
+            // Използвайте метода floor() за да закръглите числото нагоре до най-близкото цяло число
+            const index = Math.floor(random * chars.length);
+
+            // Добавете символа на индекса към паролата
+            password += chars[index];
+          }
+
+          // Върнете генерираната парола
+          return parola;
         }
 
-        let pass = makepass(10);
+
         function checkLoginState() {
             FB.getLoginStatus(function(response) {
             console.log(response);
             });
             
             FB.api('/me', {fields: 'name, email'}, function(response) {
-              console.log(response);
-            	console.log(response.name, response.email);
+            	console.log(response.name, response.email, response.id);
                   var name = $("#username").val();
                   $.ajax({
                     type: "POST",
                     url: "https://baseus.bg/baseus2/index.php?route=account/register",
-                    data: {lastname: response.name,firstname: response.name, email: 'fsajfkav1111222kl@abv.bg', password: '59!24Aa@@112', confirm: '59!24Aa@@112', agree:1},
+                    data: {lastname: response.name,firstname: response.name, email: response.email, password: response.id,  confirm: response.id, agree:1},
                     cache: false,
                     success: function(data){
                       console.log(data);
-                      window.location.href = window.location.href;
+                      //window.location.href = window.location.href;
                       //$("#input-firstname").text(data.name);
                       //$("#input-email").text(data.email);
                       //$("#input-password").text("test");
